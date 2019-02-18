@@ -26,6 +26,17 @@ fact: (inst tile6 Tile)
 fact: (inst tile7 Tile)
 fact: (inst tile8 Tile)
 
+fact: (tile_num tile1 1)
+fact: (tile_num tile2 2)
+fact: (tile_num tile3 3)
+fact: (tile_num tile4 4)
+fact: (tile_num tile5 5)
+fact: (tile_num tile6 6)
+fact: (tile_num tile7 7)
+fact: (tile_num tile8 8)
+fact: (tile_num empty -1)
+
+
 fact: (inst empty Empty)
 
 fact: (posxy tile1 pos1 pos1)
@@ -44,5 +55,5 @@ rule: ((posxy ?tile1 ?x ?y1) (posxy ?tile2 ?x ?y2) (posxy ?tile2 ?x pos2 )) -> (
 rule: ((posxy ?tile1 ?x1 ?y) (posxy ?tile1 pos2 ?y) (posxy ?tile2 ?x2 ?y)) -> (adjacent ?tile1 ?tile2)
 rule: ((posxy ?tile1 ?x1 ?y) (posxy ?tile2 pos2 ?y) (posxy ?tile2 ?x2 ?y)) -> (adjacent ?tile1 ?tile2)
 
-rule: ((adjacent ?empty ?tile) (posxy ?tile ?xt ?yt) (posxy ?empty ?xe ?ye) (inst ?empty Empty)) -> (movable ?tile ?xt ?yt ?xe ?ye)
-rule: ((adjacent ?tile ?empty) (posxy ?tile ?xt ?yt) (posxy ?empty ?xe ?ye) (inst ?empty Empty)) -> (movable ?tile ?xt ?yt ?xe ?ye)
+rule: ((adjacent ?empty ?tile) (inst ?tile Tile) (posxy ?tile ?xt ?yt) (posxy ?empty ?xe ?ye) (inst ?empty Empty)) -> (movable ?tile ?xt ?yt ?xe ?ye)
+rule: ((adjacent ?tile ?empty) (inst ?tile Tile) (posxy ?tile ?xt ?yt) (posxy ?empty ?xe ?ye) (inst ?empty Empty)) -> (movable ?tile ?xt ?yt ?xe ?ye)

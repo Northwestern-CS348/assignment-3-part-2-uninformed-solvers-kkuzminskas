@@ -42,8 +42,11 @@ class TowerOfHanoiGame(GameMaster):
         # final game state tuple list
         game_state = []
 
+        all_disk = 0
+
         for peg in pegs:
             disks = KB.kb_ask(parse_input("fact: (on ?disk " + peg + ")"))
+
 
             peg_tuple = []
 
@@ -56,6 +59,8 @@ class TowerOfHanoiGame(GameMaster):
                 peg_tuple.sort()
 
             game_state.append(tuple(peg_tuple))
+
+
 
         return tuple(game_state)
             
@@ -109,6 +114,7 @@ class TowerOfHanoiGame(GameMaster):
         # change the new top of the current peg
         disk_base_under_move = KB.kb_ask(parse_input("fact: (ontop " + str(disk) + " ?d)"))
         str_new_top = str(disk_base_under_move[0].bindings[0].constant)
+
         
         fact_add = parse_input("fact: (top " + str_new_top + " " + str(curr_peg) + ")")
         KB.kb_assert(fact_add)
@@ -139,12 +145,8 @@ class TowerOfHanoiGame(GameMaster):
         # make the new top of the target
         KB.kb_assert(parse_input("fact: (top " + str(disk) + " " + str(target_peg) + ")"))
 
-        disks = KB.kb_ask(parse_input("fact: (on ?disk " + str(target_peg) + ")"))
-        return
         
-
-
-
+        return
 
     def reverseMove(self, movable_statement):
         """
@@ -160,6 +162,7 @@ class TowerOfHanoiGame(GameMaster):
         sl = movable_statement.terms
         newList = [pred, sl[0], sl[2], sl[1]]
         self.makeMove(Statement(newList))
+
 
 class Puzzle8Game(GameMaster):
 
@@ -191,7 +194,39 @@ class Puzzle8Game(GameMaster):
             A Tuple of Tuples that represent the game state
         """
         ### Student code goes here
-        pass
+        KB = self.kb
+
+        # tuple to return
+        game_state = []
+
+        row_names = ["pos1", "pos2", "pos3"]
+
+        for r in row_names:        
+            # iterate through all the rows
+            row = KB.kb_ask(parse_input("fact: (posxy ?tile ?posx " + str(r) + ")"))
+
+            # fill the row tuple with dummy values
+            row_tuple = [10, 11, 12]
+
+
+            for tile in row:
+                str_tile = str(tile.bindings[0].constant)
+                str_posx = str(tile.bindings[1].constant)
+                order_binding = self.kb.kb_ask(parse_input("fact: (tile_num " + str_tile + " ?order)"))
+                tile_size_order = int(str(order_binding[0].bindings[0].constant))
+                if str_posx == "pos1":
+                    row_tuple[0] = tile_size_order
+                elif str_posx == "pos2":
+                    row_tuple[1] = tile_size_order
+                else:
+                    row_tuple[2] = tile_size_order
+
+            game_state.append(tuple(row_tuple))
+
+        return tuple(game_state)
+
+
+
 
     def makeMove(self, movable_statement):
         """
@@ -210,7 +245,49 @@ class Puzzle8Game(GameMaster):
             None
         """
         ### Student code goes here
-        pass
+        KB = self.kb
+
+        predicate = movable_statement.predicate
+        terms = movable_statement.terms
+
+        tile = terms[0]
+        tile_posx = terms[1]
+        tile_posy = terms[2]
+        empty_posx = terms[3]
+        empty_posy = terms[4]
+
+        if predicate != "movable":
+            print("Error: This is not a movable statement")
+            return
+    
+
+        # retract the previous position of the tile
+        tile_retract_fact = parse_input("fact: (posxy " + str(tile) + " " + str(tile_posx) + " " + str(tile_posy) + ")")
+        KB.kb_retract(tile_retract_fact)
+
+        
+        # retract the previous positiono the empty space
+        empty_space_name = KB.kb_ask(parse_input("fact: (posxy ?name " + str(empty_posx) + " " + str(empty_posy) + ")"))
+        empty_name = empty_space_name[0].bindings[0].constant
+
+        
+        prev_empty_fact = parse_input("fact: (posxy " + str(empty_name) +  " " + str(empty_posx) + " " + str(empty_posy) + ")")
+        #prev_empty_fact = parse_input("fact: (posxy empty " + str(empty_posx) + " " + str(empty_posy) + ")")
+      
+        
+        KB.kb_retract(prev_empty_fact)
+       
+
+
+        # add the new positions to the KB
+        tile_fact = parse_input("fact: (posxy " + str(tile) + " " + str(empty_posx) + " " + str(empty_posy) + ")")
+        KB.kb_add(tile_fact)
+
+        empty_fact = parse_input("fact: (posxy " + str(empty_name) + " " + str(tile_posx) + " " + str(tile_posy) + ")")
+        KB.kb_add(empty_fact)
+
+        return
+
 
     def reverseMove(self, movable_statement):
         """
