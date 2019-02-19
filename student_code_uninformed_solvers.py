@@ -212,7 +212,6 @@ class SolverDFS(UninformedSolver):
 class SolverBFS(UninformedSolver):
     def __init__(self, gameMaster, victoryCondition):
         super().__init__(gameMaster, victoryCondition)
-        self.movables = queue.Queue()
         self.nodes = queue.Queue()
         self.list_moves_root_to_child = dict()
 
@@ -239,56 +238,21 @@ class SolverBFS(UninformedSolver):
                 children.append(game_state)
                 self.visited[game_state] = False
                 self.nodes.put(game_state)
-                self.list_moves_root_to_child[game_state] = parent_list_moves.copy()
+                self.list_moves_root_to_child[game_state] = []
+                self.list_moves_root_to_child[game_state].extend(parent_list_moves)
                 self.list_moves_root_to_child[game_state].append(game_state)
-            elif self.visited[game_state] == False:
-                children.append(game_state)
-                self.nodes.put(game_state)
-                self.list_moves_root_to_child[game_state] = parent_list_moves.copy()
-                self.list_moves_root_to_child[game_state].append(game_state)
+            #elif self.visited[game_state] == False:
+            #    children.append(game_state)
+            #    self.nodes.put(game_state)
+            #    self.list_moves_root_to_child[game_state] = []
+            #    self.list_moves_root_to_child[game_state].extend(parent_list_moves)
+            #    self.list_moves_root_to_child[game_state].append(game_state)
 
             self.gm.reverseMove(m)
 
         return children
 
-    def get_child(self):
-        self.nodes.put(self.currentState)
-
-        #if self.movables.empty:
-        movables = self.gm.getMovables()
-        #    self.movables.put(movable)
-        idx = self.currentState.nextChildToVisit
-
-        #if idx == len(movables):
-
-
-        m = movables[idx] #self.movables.get()
-
-        parent = self.currentState
-        depth = parent.depth
-
-        self.gm.makeMove(m)
-        s = self.gm.getGameState()
-        game_state = GameState(s, depth + 1, m)
-        game_state.parent = parent
-       
-        if game_state not in self.visited:
-            child = game_state
-            self.visited[game_state] = True
-            self.currentState.children.append(child)
-            self.nodes.put(child)
-            self.gm.reverseMove(m)
-            self.currentState.nextChildToVisit += 1
-        else:
-            self.currentState.nextChildToVisit += 1
-            self.gm.reverseMove(m)
-            child = self.get_child()
-
-        
-        return child
-        
-    def find_current_location(self):
-        depth = self.currentState
+    
 
     def solveOneStep(self):
         """
@@ -326,16 +290,15 @@ class SolverBFS(UninformedSolver):
 
 
         prev_list_moves = self.list_moves_root_to_child[self.currentState]
-
+        prev_list_moves.reverse()
 
         self.currentState = self.nodes.get()
         curr_list_moves = self.list_moves_root_to_child[self.currentState]
-        length = len(prev_list_moves)-1
         
 
         # get the gm to the current state
-        for i in range(length, -1, -1):
-            next_mov = curr_list_moves[i]
+        for m in prev_list_moves:
+            next_mov = m
             self.gm.reverseMove(next_mov.requiredMovable)
             #print("next move reverse")
             #print(self.gm.getGameState())
@@ -345,7 +308,10 @@ class SolverBFS(UninformedSolver):
             self.gm.makeMove(next_mov.requiredMovable)
             #print("next move down")
             #print(self.gm.getGameState())
+            #check = self.gm.getGameState()
 
+        if self.currentState.state == self.victoryCondition:
+            return True
         
 
         return False

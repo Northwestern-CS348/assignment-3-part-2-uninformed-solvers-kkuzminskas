@@ -226,6 +226,8 @@ class Puzzle8Game(GameMaster):
                     row_tuple[1] = tile_size_order
                 else:
                     row_tuple[2] = tile_size_order
+                
+            # can check if empty by seeing if 10, 11, 12 in row_tupe
 
             game_state.append(tuple(row_tuple))
 
