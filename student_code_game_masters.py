@@ -176,7 +176,6 @@ class Puzzle8Game(GameMaster):
         Create the Fact object that could be used to query
         the KB of the presently available moves. This function
         is called once per game.
-
         Returns:
              A Fact object that could be used to query the currently available moves
         """
@@ -188,10 +187,8 @@ class Puzzle8Game(GameMaster):
         The output should be a Tuple of Three Tuples. Each inner tuple should
         represent a row of tiles on the board. Each tile should be represented
         with an integer; the empty space should be represented with -1.
-
         For example, the output should adopt the following format:
         ((1, 2, 3), (4, 5, 6), (7, 8, -1))
-
         Returns:
             A Tuple of Tuples that represent the game state
         """
@@ -215,9 +212,14 @@ class Puzzle8Game(GameMaster):
             for tile in row:
                 str_tile = str(tile.bindings[0].constant)
                 str_posx = str(tile.bindings[1].constant)
-                order_ask = Fact(Statement(["tile_num", str_tile, "?order"]))
-                order_binding = self.kb.kb_ask(order_ask)
-                tile_size_order = int(str(order_binding[0].bindings[0].constant))
+                #order_ask = Fact(Statement(["tile_num", str_tile, "?order"]))
+                #order_binding = self.kb.kb_ask(order_ask)
+                #tile_size_order = int(str(order_binding[0].bindings[0].constant))
+                if str_tile == "empty":
+                    tile_size_order = -1
+                else:
+                    tile_size_order = int(str_tile[-1])
+                
                 if str_posx == "pos1":
                     row_tuple[0] = tile_size_order
                 elif str_posx == "pos2":
@@ -237,14 +239,11 @@ class Puzzle8Game(GameMaster):
         Takes a MOVABLE statement and makes the corresponding move. This will
         result in a change of the game state, and therefore requires updating
         the KB in the Game Master.
-
         The statement should come directly from the result of the MOVABLE query
         issued to the KB, in the following format:
         (movable tile3 pos1 pos3 pos2 pos3)
-
         Args:
             movable_statement: A Statement object that contains one of the currently viable moves
-
         Returns:
             None
         """
@@ -301,10 +300,8 @@ class Puzzle8Game(GameMaster):
     def reverseMove(self, movable_statement):
         """
         See overridden parent class method for more information.
-
         Args:
             movable_statement: A Statement object that contains one of the previously viable moves
-
         Returns:
             None
         """

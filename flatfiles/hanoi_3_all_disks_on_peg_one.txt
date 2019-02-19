@@ -53,5 +53,5 @@ fact: (ontop disk3 base1)
 
 rule: ((top ?base ?peg) (inst ?base Base)) -> (empty ?peg)
 rule: ((larger ?disk1 ?disk2) (larger ?disk2 ?disk3)) -> (larger ?disk1 ?disk3)
-rule: ((top ?disk_move ?peg_initial) (top ?disk_target ?peg_target) (inst ?disk_move Disk) (inst ?disk_target Disk) (larger ?disk_target ?disk_move)) -> (movable ?disk_move ?peg_initial ?peg_target)
+rule: ((top ?disk_move ?peg_initial) (top ?disk_target ?peg_target) (inst ?disk_move Disk) (larger ?disk_target ?disk_move) (inst ?disk_target Disk)) -> (movable ?disk_move ?peg_initial ?peg_target)
 rule: ((empty ?peg_target) (top ?disk ?peg_initial) (inst ?disk Disk)) -> (movable ?disk ?peg_initial ?peg_target)
