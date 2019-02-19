@@ -102,6 +102,7 @@ class TowerOfHanoiGame(GameMaster):
         curr_peg = terms[1]
         target_peg = terms[2]
 
+
         # retract all facts from the KB that are involved with the disk being on that peg
         related_predicates = ["on", "top"]
 
@@ -118,6 +119,7 @@ class TowerOfHanoiGame(GameMaster):
         
         fact_add = parse_input("fact: (top " + str_new_top + " " + str(curr_peg) + ")")
         KB.kb_assert(fact_add)
+
 
         # remove the ontop of fact
         fact_remove = parse_input("fact: (ontop " + str(disk) + " " + str_new_top + ")")
