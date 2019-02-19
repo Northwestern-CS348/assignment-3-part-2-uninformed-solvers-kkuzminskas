@@ -73,63 +73,6 @@ class SolverDFS(UninformedSolver):
         return child
 
 
-    def solveOneStep2(self):
-        """
-        Go to the next state that has not been explored. If a
-        game state leads to more than one unexplored game states,
-        explore in the order implied by the GameMaster.getMovables()
-        function.
-        If all game states reachable from a parent state has been explored,
-        the next explored state should conform to the specifications of
-        the Depth-First Search algorithm.
-        Returns:
-            True if the desired solution state is reached, False otherwise
-        """
-
-        if self.gm.getGameState() == self.victoryCondition:
-            return True
-            
-        possibleMoves = self.gm.getMovables()
-
-        if len(possibleMoves) == 0:
-            self.currentState = self.currentState.parent
-            self.solveOneStep()
-        else:
-            allMovesVisited = True
-            for move in possibleMoves:
-                self.gm.makeMove(move)
-
-                currentGameState = GameState(self.gm.getGameState(), self.currentState.depth + 1, move)
-
-                if not self.visited.get(currentGameState, False):
-                    if not currentGameState in self.currentState.children:
-                        self.currentState.children.append(currentGameState)
-                        currentGameState.parent = self.currentState
-
-                self.gm.reverseMove(move)
-
-            for child in self.currentState.children:
-                move = child.requiredMovable
-                self.gm.makeMove(move)
-
-                if self.visited.get(child, False):
-                    self.gm.reverseMove(move)
-                    continue
-
-                self.visited[child] = True
-                self.currentState = child
-                allMovesVisited = False
-                break
-
-            if allMovesVisited:
-                self.currentState = self.currentState.parent
-                self.solveOneStep()
-        
-        if self.gm.getGameState() == self.victoryCondition:
-            return True
-
-        return False
-
     def solveOneStep(self):
         """
         Go to the next state that has not been explored. If a
