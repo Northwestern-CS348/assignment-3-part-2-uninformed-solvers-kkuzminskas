@@ -205,7 +205,8 @@ class Puzzle8Game(GameMaster):
 
         for r in row_names:        
             # iterate through all the rows
-            row = KB.kb_ask(parse_input("fact: (posxy ?tile ?posx " + str(r) + ")"))
+            row_fact = Fact(Statement(["posxy", "?tile", "?posx", str(r)]))
+            row = KB.kb_ask(row_fact)
 
             # fill the row tuple with dummy values
             row_tuple = [10, 11, 12]
@@ -214,7 +215,8 @@ class Puzzle8Game(GameMaster):
             for tile in row:
                 str_tile = str(tile.bindings[0].constant)
                 str_posx = str(tile.bindings[1].constant)
-                order_binding = self.kb.kb_ask(parse_input("fact: (tile_num " + str_tile + " ?order)"))
+                order_ask = Fact(Statement(["tile_num", str_tile, "?order"]))
+                order_binding = self.kb.kb_ask(order_ask)
                 tile_size_order = int(str(order_binding[0].bindings[0].constant))
                 if str_posx == "pos1":
                     row_tuple[0] = tile_size_order
@@ -264,28 +266,33 @@ class Puzzle8Game(GameMaster):
     
 
         # retract the previous position of the tile
-        tile_retract_fact = parse_input("fact: (posxy " + str(tile) + " " + str(tile_posx) + " " + str(tile_posy) + ")")
+        #tile_retract_fact = parse_input("fact: (posxy " + str(tile) + " " + str(tile_posx) + " " + str(tile_posy) + ")")
+        tile_retract_fact = Fact(Statement(["posxy", str(tile), str(tile_posx), str(tile_posy)]))
         KB.kb_retract(tile_retract_fact)
 
         
         # retract the previous positiono the empty space
-        empty_space_name = KB.kb_ask(parse_input("fact: (posxy ?name " + str(empty_posx) + " " + str(empty_posy) + ")"))
-        empty_name = empty_space_name[0].bindings[0].constant
+        #empty_space_name = KB.kb_ask(parse_input("fact: (posxy ?name " + str(empty_posx) + " " + str(empty_posy) + ")"))
+        #empty_name = empty_space_name[0].bindings[0].constant
 
         
-        prev_empty_fact = parse_input("fact: (posxy " + str(empty_name) +  " " + str(empty_posx) + " " + str(empty_posy) + ")")
+        #prev_empty_fact = parse_input("fact: (posxy " + str(empty_name) +  " " + str(empty_posx) + " " + str(empty_posy) + ")")
         #prev_empty_fact = parse_input("fact: (posxy empty " + str(empty_posx) + " " + str(empty_posy) + ")")
-      
+        prev_empty_fact = Fact(Statement(["posxy", "empty", str(empty_posx), str(empty_posy)]))
         
         KB.kb_retract(prev_empty_fact)
        
 
 
         # add the new positions to the KB
-        tile_fact = parse_input("fact: (posxy " + str(tile) + " " + str(empty_posx) + " " + str(empty_posy) + ")")
+        #tile_fact = parse_input("fact: (posxy " + str(tile) + " " + str(empty_posx) + " " + str(empty_posy) + ")")
+        tile_fact = Fact(Statement(["posxy", str(tile), str(empty_posx), str(empty_posy)]))
         KB.kb_add(tile_fact)
 
-        empty_fact = parse_input("fact: (posxy " + str(empty_name) + " " + str(tile_posx) + " " + str(tile_posy) + ")")
+        #empty_fact = parse_input("fact: (posxy " + str(empty_name) + " " + str(tile_posx) + " " + str(tile_posy) + ")")
+        #empty_fact = parse_input("fact: (posxy empty " + str(tile_posx) + " " + str(tile_posy) + ")")
+        empty_fact = Fact(Statement(["posxy", "empty", str(tile_posx), str(tile_posy)]))
+
         KB.kb_add(empty_fact)
 
         return
