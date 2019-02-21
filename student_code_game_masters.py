@@ -53,8 +53,7 @@ class TowerOfHanoiGame(GameMaster):
             if disks:
                 for d in disks:
                     str_disk = str(d.bindings[0].constant)
-                    order_binding = self.kb.kb_ask(parse_input("fact: (size_order " + str_disk + " ?order"))
-                    disk_size_order = int(str(order_binding[0].bindings[0].constant))
+                    disk_size_order = int(str_disk[-1])
                     peg_tuple.append(disk_size_order)
                 peg_tuple.sort()
 
