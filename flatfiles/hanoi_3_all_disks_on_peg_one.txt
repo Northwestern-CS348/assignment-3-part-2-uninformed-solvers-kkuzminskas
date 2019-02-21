@@ -42,10 +42,6 @@ fact: (top base3 peg3)
 fact: (larger disk2 disk1)
 fact: (larger disk3 disk2)
 
-fact: (size_order disk1 1)
-fact: (size_order disk2 2)
-fact: (size_order disk3 3)
-
 
 fact: (ontop disk1 disk2)
 fact: (ontop disk2 disk3)

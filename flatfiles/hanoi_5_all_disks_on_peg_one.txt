@@ -48,12 +48,6 @@ fact: (larger disk3 disk2)
 fact: (larger disk4 disk3)
 fact: (larger disk5 disk4)
 
-fact: (size_order disk1 1)
-fact: (size_order disk2 2)
-fact: (size_order disk3 3)
-fact: (size_order disk4 4)
-fact: (size_order disk5 5)
-
 
 fact: (ontop disk1 disk2)
 fact: (ontop disk2 disk3)
