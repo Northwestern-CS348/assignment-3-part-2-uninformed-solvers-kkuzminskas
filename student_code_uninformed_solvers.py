@@ -64,7 +64,7 @@ class SolverDFS(UninformedSolver):
         children = self.get_children()
         self.currentState.children = children
 
-        while idx == len(children):
+        while idx == len(self.currentState.children):
             if self.currentState.depth == 0:
                 idx = self.currentState.nextChildToVisit
                 break
@@ -77,6 +77,7 @@ class SolverDFS(UninformedSolver):
         child = self.currentState.children[idx]
 
         if self.visited[child] == False:
+            self.currentState.nextChildToVisit += 1
             self.gm.makeMove(child.requiredMovable)
             self.currentState = child
             return False
